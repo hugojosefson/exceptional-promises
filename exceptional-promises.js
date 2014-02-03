@@ -2,10 +2,12 @@
 /*jslint node: true*/
 (function () {
     var Q = require("q");
+    require("colors");
 
     function foo() {
         var deferred = Q.defer();
-        throw new Error("Can't foo");   // Uncaught Error: Can't foo
+        throw new Error("Can't foo");
+        deferred.resolve();
         return deferred.promise;
     }
 
@@ -15,14 +17,27 @@
         return deferred.promise;
     }
 
+    function successHandlerFor(id) {
+        return function successHandler() {
+            console.log((id + ": YAY!").green);
+        }
+    }
+
+    function errorHandlerFor(id) {
+        return function errorHandler(err) {
+            console.error((id + ": " + err.message).red);
+            return Q.reject(err);
+        }
+    }
+
     function init() {
-        foo()
-            .then(function () {
-                return bar();
-            })
-            .fail(function (err) {
-                console.log(err.message);
-            });
+        var promiseFromFoo = foo();
+
+        var promiseFromBar = promiseFromFoo.then(function () {
+            return bar();
+        }, errorHandlerFor("promiseFromFoo"));
+
+        promiseFromBar.then(successHandlerFor("promiseFromBar"), errorHandlerFor("promiseFromBar"));
     }
 
     init();
