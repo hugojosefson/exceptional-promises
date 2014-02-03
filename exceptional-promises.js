@@ -5,13 +5,13 @@
 
     function foo() {
         var deferred = Q.defer();
-        deferred.resolve();
+        throw new Error("Can't foo");   // Uncaught Error: Can't foo
         return deferred.promise;
     }
 
     function bar() {
         var deferred = Q.defer();
-        throw new Error("Can't bar");
+        deferred.resolve();
         return deferred.promise;
     }
 
@@ -21,7 +21,7 @@
                 return bar();
             })
             .fail(function (err) {
-                console.log(err.message);   // Can't bar
+                console.log(err.message);
             });
     }
 
