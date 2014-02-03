@@ -13,6 +13,8 @@ Example of how to handle exceptions together with promises.
 
 ## What's going on?
 
+Follow along in the code: Click each branch link below.
+
 ### Can't bar
 
 At [branch cant-bar](https://github.com/hugojosefson/exceptional-promises/blob/cant-bar/exceptional-promises.js), the
@@ -50,3 +52,6 @@ Finally, on [branch wrap](https://github.com/hugojosefson/exceptional-promises/b
 ([diff](https://github.com/hugojosefson/exceptional-promises/compare/refactor...wrap)), the call to `foo` has been
 wrapped to catch anything thrown before the function returns. Any outcome of the function call is instead turned into
 a promise, which is guaranteed not to throw anything, but rather be resolved or rejected.
+
+When the exception from `foo` is caught and used for rejecting the wrapper promise, that rejection continues through the
+promise chain, causing the rest of the error handlers to be called with the same rejection: _Can't foo_.
